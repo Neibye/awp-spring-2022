@@ -1,8 +1,9 @@
 import { useLoaderData, useCatch } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import connectDb from "~/db/connectDb.server.js";
+import { requireUserSession } from "../../sessions.server";
 
-export async function loader({ params }) {
+export async function loader({ params, request }) {
   const db = await connectDb();
   const book = await db.models.Book.findById(params.bookId);
   if (!book) {
@@ -10,8 +11,16 @@ export async function loader({ params }) {
       status: 404,
     });
   }
-  // TODO: Verify that the book belongs to the currently logged in user, otherwise throw a 403 error
-  return json(book);
+  const session = await requireUserSession(request);
+  const userId = session.get("userId");
+  const verifyUser = userId == book.userId;
+  if (!verifyUser) {
+    throw new Response(`This book doesnt belong to you :) ${params.bookId}`, {
+      status: 403,
+    });
+  } else {
+    return json(book);
+  }
 }
 
 export default function BookPage() {
