@@ -9,6 +9,7 @@ const bookSchema = new Schema(
       required: true,
       minLength: [3, "That's too short"],
     },
+    // Add a "userId" property of type Schema.Types.ObjectId with a "ref" to the User model:
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",

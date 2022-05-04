@@ -3,17 +3,20 @@ import { redirect, json } from "@remix-run/node";
 import connectDb from "~/db/connectDb.server.js";
 import { requireUserSession } from "../../sessions.server";
 
+// Implement a loader that verifies that the user is logged in, otherwise redirect them to the login page
 export async function loader({ request }) {
   await requireUserSession(request);
   return null;
 }
 
 export async function action({ request }) {
+  // Verify that the user is logged in, otherwise redirect them to the login page
   const session = await requireUserSession(request);
   const userId = session.get("userId");
   const form = await request.formData();
   const db = await connectDb();
   try {
+    // In addition to the title, also set a "userId" pulled from the session
     const newBook = await db.models.Book.create({
       title: form.get("title"),
       userId: userId,

@@ -3,8 +3,12 @@ import connectDb from "~/db/connectDb.server.js";
 import { requireUserSession } from "~/sessions.server";
 
 export async function loader({ request }) {
+  // Verify that the user is authenticated, otherwise redirect to login page
   const db = await connectDb();
   const session = await requireUserSession(request);
+
+  // Get the "userId" from the session and filter the books to only return
+  // Those belonging to the current user
   const userId = session.get("userId");
 
   const books = await db.models.Book.find({

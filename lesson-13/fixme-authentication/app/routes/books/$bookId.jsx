@@ -11,6 +11,7 @@ export async function loader({ params, request }) {
       status: 404,
     });
   }
+  // Verify that the book belongs to the currently logged in user, otherwise throw a 403 error
   const session = await requireUserSession(request);
   const userId = session.get("userId");
   const verifyUser = userId == book.userId;

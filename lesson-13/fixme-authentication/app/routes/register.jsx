@@ -11,6 +11,7 @@ export async function action({ request }) {
   const form = await request.formData();
 
   if (form.get("password").trim() !== form.get("repeatPassword").trim()) {
+    // Return a json response with an "errorMessage" about the password not matching. Status 400?
     return json(
       {
         errorMessage: "Passwords doesnt match",
@@ -21,6 +22,7 @@ export async function action({ request }) {
   }
 
   if (form.get("password").trim()?.length < 8) {
+    // Return a json response with an "errorMessage" about the password length. Status 400?
     return json(
       {
         errorMessage: "Atleast 8 characters",
@@ -38,6 +40,7 @@ export async function action({ request }) {
       password: hashedPassword,
     });
     if (user) {
+      // Return a redirect to the home page which sets a cookie that commits the session
       session.set("userId", user._id);
       return redirect(`/`, {
         headers: {
@@ -63,6 +66,7 @@ export async function action({ request }) {
 }
 
 export async function loader({ request }) {
+  // Check if the session has a userId, and if so; redirect to the homepage
   await requireUserSession(request);
   return null;
 }
