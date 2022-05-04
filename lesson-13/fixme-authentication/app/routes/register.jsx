@@ -6,8 +6,13 @@ import connectDb from "~/db/connectDb.server.js";
 import { requireUserSession } from "../sessions.server";
 
 export async function action({ request }) {
+  /* Connecting to the database. */
   const db = await connectDb();
+
+  /* Getting the session from the cookie. */
   const session = await getSession(request.headers.get("Cookie"));
+
+  /* Getting the form data from the request. */
   const form = await request.formData();
 
   if (form.get("password").trim() !== form.get("repeatPassword").trim()) {

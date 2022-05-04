@@ -20,6 +20,7 @@ export async function loader({ request }) {
 export default function Index() {
   const books = useLoaderData();
 
+  /* Returning the HTML code for the page. */
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Remix + Mongoose</h1>
